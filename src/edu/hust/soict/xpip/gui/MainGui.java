@@ -5,11 +5,31 @@
  */
 package edu.hust.soict.xpip.gui;
 
+import edu.hust.soict.xpip.constants.FileConstants;
+import edu.hust.soict.xpip.utils.FileUtils;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+
 /**
  *
  * @author thinhntb
  */
 public class MainGui extends javax.swing.JFrame {
+
+    /**
+     * Tệp tin cần phân tích
+     */
+    private File inputFile;
+
+    /**
+     * Các byte dữ liệu đọc từ tệp tin
+     */
+    private char [] rawData;
 
     /**
      * Creates new form MainGui
@@ -56,6 +76,11 @@ public class MainGui extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTree1);
 
         buttonParse.setText("Phân tích");
+        buttonParse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonParseActionPerformed(evt);
+            }
+        });
 
         jScrollPane2.setViewportView(jTextPane1);
 
@@ -107,12 +132,12 @@ public class MainGui extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonParse)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel2)
                     .addComponent(comboNumOfThreads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(labelExeTime))
+                    .addComponent(labelExeTime)
+                    .addComponent(buttonParse))
                 .addContainerGap())
         );
 
@@ -122,8 +147,58 @@ public class MainGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonSelectFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSelectFileActionPerformed
-        // TODO add your handling code here:
+        JFileChooser fChooser = new JFileChooser(new File(System.getProperty("user.home")));
+        fChooser.setFileFilter(new FileFilter() {
+
+            @Override
+            public boolean accept(File f) {
+                String ext = FileUtils.getExtension(f);
+                if (f.isDirectory() || FileConstants.XML_EXT.equals(ext)) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                return "*.xml";
+            }
+        });
+
+        int state = fChooser.showOpenDialog(this);
+        if (JFileChooser.APPROVE_OPTION == state) {
+            inputFile = fChooser.getSelectedFile();
+            textFiledInputFile.setText(inputFile.getAbsolutePath());
+            
+            BufferedReader reader = null;
+            StringBuilder builder = null;
+            try {
+                reader = new BufferedReader(new FileReader(inputFile));
+                builder = new StringBuilder();
+                char[] buf = new char[1024];
+                int numRead = 0;
+                while ((numRead = reader.read(buf)) != -1) {
+                    builder.append(buf, 0, numRead);
+                }
+                rawData = builder.toString().toCharArray();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
     }//GEN-LAST:event_buttonSelectFileActionPerformed
+
+    private void buttonParseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonParseActionPerformed
+
+    }//GEN-LAST:event_buttonParseActionPerformed
 
     /**
      * @param args the command line arguments
