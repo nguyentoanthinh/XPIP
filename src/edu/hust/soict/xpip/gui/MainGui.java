@@ -5,14 +5,19 @@
  */
 package edu.hust.soict.xpip.gui;
 
+import edu.hust.soict.xpip.components.CharactersArrayChunker;
+import edu.hust.soict.xpip.components.CharactersLoader;
 import edu.hust.soict.xpip.constants.FileConstants;
 import edu.hust.soict.xpip.utils.FileUtils;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -26,10 +31,7 @@ public class MainGui extends javax.swing.JFrame {
      */
     private File inputFile;
 
-    /**
-     * Các byte dữ liệu đọc từ tệp tin
-     */
-    private char [] rawData;
+    private char[] rawData;
 
     /**
      * Creates new form MainGui
@@ -170,36 +172,65 @@ public class MainGui extends javax.swing.JFrame {
         if (JFileChooser.APPROVE_OPTION == state) {
             inputFile = fChooser.getSelectedFile();
             textFiledInputFile.setText(inputFile.getAbsolutePath());
-            
-            BufferedReader reader = null;
-            StringBuilder builder = null;
-            try {
-                reader = new BufferedReader(new FileReader(inputFile));
-                builder = new StringBuilder();
-                char[] buf = new char[1024];
-                int numRead = 0;
-                while ((numRead = reader.read(buf)) != -1) {
-                    builder.append(buf, 0, numRead);
-                }
-                rawData = builder.toString().toCharArray();
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
-            }
         }
     }//GEN-LAST:event_buttonSelectFileActionPerformed
 
     private void buttonParseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonParseActionPerformed
+        if (inputFile == null) {
+            JOptionPane.showMessageDialog(this, "Bạn chưa chọn tệp tin XML "
+                    + "cần phân tích!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        /**
+         * Load các ký tự từ tệp tin lên mảng rawData
+         */
+        new SwingWorker<Void, Void>() {
+
+            Exception e = null;
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                CharactersLoader loader = new CharactersLoader(inputFile);
+                try {
+                    rawData = loader.load();
+                } catch (IOException | NullPointerException ex) {
+                    e = ex;
+                }
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                super.done(); //To change body of generated methods, choose Tools | Templates.
+                if (e != null) {
+                    JOptionPane.showMessageDialog(MainGui.this, e.getMessage(),
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                chunkingData();
+            }
+
+        }.execute();
     }//GEN-LAST:event_buttonParseActionPerformed
 
+    /**
+     * Phân mảnh dữ liệu.
+     */
+    public void chunkingData(){
+        new SwingWorker<Void, Void>(){
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                List<Integer> pos = new CharactersArrayChunker(rawData).chunk();
+                return null;
+            }
+            
+        }.execute();
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
