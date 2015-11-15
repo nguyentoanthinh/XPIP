@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import javax.swing.JOptionPane;
 
 /**
  * Cung cấp chức năng load các ký tự từ tệp tin lên mảng.
@@ -28,26 +27,20 @@ public class CharactersLoader {
         if (inputFile == null){
             throw new NullPointerException("Null pointer at inuptFile!");
         }
-        
-        char[] rawData;
-        BufferedReader reader = null;
-        StringBuilder builder = null;
 
-        reader = new BufferedReader(new FileReader(inputFile));
-        builder = new StringBuilder();
         char[] buf = new char[1024];
         int numRead = 0;
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
         
         while ((numRead = reader.read(buf)) != -1) {
             builder.append(buf, 0, numRead);
         }
-        rawData = builder.toString().toCharArray();
-
         if (reader != null) {
             reader.close();
         }
         
-        return rawData;
+        return builder.toString().toCharArray();
     }
 
 }
