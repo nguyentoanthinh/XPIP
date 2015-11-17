@@ -4,11 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/components/ChunkParser.java</file>
-            <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/components/CharactersArrayChunker.java</file>
             <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/entities/Chunk.java</file>
+            <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/components/AppLogic.java</file>
             <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/entities/SelfClosingElement.java</file>
+            <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/components/FileChunker.java</file>
             <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/gui/MainGui.java</file>
-            <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/components/CharactersLoader.java</file>
             <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/entities/StartElement.java</file>
             <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/entities/TextNode.java</file>
             <file>file:/home/thinhntb/NetBeansProjects/XMLProcessingInParallel/src/edu/hust/soict/xpip/entities/XMLDeclarationElement.java</file>
