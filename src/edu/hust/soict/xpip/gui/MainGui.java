@@ -7,12 +7,17 @@ package edu.hust.soict.xpip.gui;
 
 import edu.hust.soict.xpip.components.CharactersArrayChunker;
 import edu.hust.soict.xpip.components.CharactersLoader;
+import edu.hust.soict.xpip.components.ChunkParser;
 import edu.hust.soict.xpip.constants.FileConstants;
+import edu.hust.soict.xpip.entities.Chunk;
 import edu.hust.soict.xpip.utils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -32,6 +37,15 @@ public class MainGui extends javax.swing.JFrame {
     private File inputFile;
 
     private char[] rawData;
+
+    private Chunk[] chunks;
+
+    private ExecutorService service;
+
+    private long startTime;
+    private long endTime;
+
+    SwingWorker<Void, Long> sw;
 
     /**
      * Creates new form MainGui
@@ -88,7 +102,7 @@ public class MainGui extends javax.swing.JFrame {
 
         jLabel2.setText("Số luồng:");
 
-        comboNumOfThreads.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+        comboNumOfThreads.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "4", "8" }));
 
         jLabel3.setText("Thời gian thực hiện:");
 
@@ -110,7 +124,7 @@ public class MainGui extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(labelExeTime)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 282, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 290, Short.MAX_VALUE)
                         .addComponent(buttonParse))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -182,55 +196,77 @@ public class MainGui extends javax.swing.JFrame {
             return;
         }
 
+        int numOfThread = Integer.parseInt(comboNumOfThreads.getSelectedItem().toString());
+        if (service != null) {
+            service.shutdown();
+        }
+        service = Executors.newFixedThreadPool(numOfThread);
         /**
          * Load các ký tự từ tệp tin lên mảng rawData
          */
-        new SwingWorker<Void, Void>() {
+//        if (sw == null) {
+//            sw = new SwingWorker<Void, Long>() {
+//
+//                Exception e = null;
+//
+//                @Override
+//                protected Void doInBackground() throws Exception {
+        CharactersLoader loader = new CharactersLoader(inputFile);
+        try {
+            //                    try {
+            rawData = loader.load();
+//                    } catch (IOException | NullPointerException ex) {
+//                        e = ex;
+//                    }
+        } catch (IOException ex) {
+            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            Exception e = null;
-
-            @Override
-            protected Void doInBackground() throws Exception {
-                CharactersLoader loader = new CharactersLoader(inputFile);
-                try {
-                    rawData = loader.load();
-                } catch (IOException | NullPointerException ex) {
-                    e = ex;
-                }
-                return null;
+        List<Integer> pos = new CharactersArrayChunker(rawData).chunk();
+        chunks = new Chunk[pos.size() - 1];
+        Future[] ft = new Future[pos.size() - 1];
+        startTime = System.currentTimeMillis();
+        for (int i = 0; i < pos.size() - 1; i++) {
+            int start = pos.get(i) + 1;
+            int end = pos.get(i + 1);
+            if (i == 0) {
+                start = pos.get(i);
             }
-
-            @Override
-            protected void done() {
-                super.done(); //To change body of generated methods, choose Tools | Templates.
-                if (e != null) {
-                    JOptionPane.showMessageDialog(MainGui.this, e.getMessage(),
-                            "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                
-                chunkingData();
+            ChunkParser cp = new ChunkParser(rawData, start, end);
+            ft[i] = service.submit(cp);
+        }
+        for (int i = 0; i < ft.length; i++) {
+            try {
+                chunks[i] = (Chunk) ft[i].get();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        endTime = System.currentTimeMillis();
+        labelExeTime.setText(String.valueOf(endTime - startTime));
+//                    return null;
+//                }
 
-        }.execute();
+//                @Override
+//                protected void done() {
+//                    super.done(); //To change body of generated methods, choose Tools | Templates.
+//                    if (e != null) {
+//                        JOptionPane.showMessageDialog(MainGui.this, e.getMessage(),
+//                                "Lỗi", JOptionPane.ERROR_MESSAGE);
+//                        return;
+//                    }
+//                    endTime = System.currentTimeMillis();
+//                    labelExeTime.setText(String.valueOf(endTime - startTime));
+//                    this.cancel(true);
+//                }
+//
+//            };
+//        }
+//        sw.execute();
     }//GEN-LAST:event_buttonParseActionPerformed
 
-    /**
-     * Phân mảnh dữ liệu.
-     */
-    public void chunkingData(){
-        new SwingWorker<Void, Void>(){
-
-            @Override
-            protected Void doInBackground() throws Exception {
-                List<Integer> pos = new CharactersArrayChunker(rawData).chunk();
-                return null;
-            }
-            
-        }.execute();
-    }
-    
-    
     /**
      * @param args the command line arguments
      */

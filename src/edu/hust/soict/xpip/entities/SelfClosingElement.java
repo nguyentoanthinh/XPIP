@@ -9,39 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Thẻ không có thẻ đóng. VD <br />
  * @author thinhntb
  */
-public class SelfClosingElement extends Element {
+public class SelfClosingElement extends NodeElement {
 
-    private Map<String, String> attList;
-    /**
-     * Danh sách nameSpace mà thẻ này định nghĩa. Nếu thẻ không định nghĩa
-     * nameSpace nào thì thuộc tính này bằng null
-     */
-    private List<NameSpace> nameSpaces;
-
-    public SelfClosingElement(NameSpace ns, String name) {
-        super(ns, name);
+    public SelfClosingElement(NameSpace ns, String name, Map<String, String> attList) {
+        super(ns, name, attList);
     }
-
-    public SelfClosingElement(NameSpace ns, String name,
-            Map<String, String> attList, List<NameSpace> nameSpaces) {
-        super(ns, name);
-        this.attList = attList;
-        this.nameSpaces = nameSpaces;
-    }
-
-    public SelfClosingElement(String name, Map<String, String> attList) {
-        this(null, name, attList, null);
-    }
-
-    /**
-     * Lấy ra danh sách các thuộc tính
-     *
-     * @return
-     */
-    public Map<String, String> getAttList() {
-        return attList;
-    }
+    
 }

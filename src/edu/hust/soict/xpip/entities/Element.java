@@ -23,14 +23,14 @@ public abstract class Element {
      */
     private NameSpace ns;
 
+    
     public Element(NameSpace ns, String name) {
         this.name = name;
         this.ns = ns;
     }
 
     public Element(String name) {
-        this.name = name;
-        this.ns = null;
+        this(null, name);
     }
 
     public String getName() {

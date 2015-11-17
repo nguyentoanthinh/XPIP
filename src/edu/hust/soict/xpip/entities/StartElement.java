@@ -12,37 +12,10 @@ import java.util.Map;
  * Lớp thực thể đại diện cho thẻ mở
  * @author thinhntb
  */
-public class StartElement extends Element{
-    /**
-     * Danh sách các thuộc tính
-     */
-    private Map<String, String> attList;
+public class StartElement extends NodeElement{
 
-    /**
-     * Danh sách nameSpace mà thẻ mở này định nghĩa.
-     * Nếu thẻ không định nghĩa nameSpace nào thì thuộc tính này bằng null
-     */
-    private List<NameSpace> nameSpaces;
-    
-    public StartElement(NameSpace ns, String name) {
-        super(ns, name);
-    }
-    
     public StartElement(NameSpace ns, String name, Map<String, String> attList, List<NameSpace> nameSpaces) {
-        super(ns, name);
-        this.attList = attList;
-        this.nameSpaces = nameSpaces;
+        super(ns, name, attList, nameSpaces);
     }
     
-    public StartElement(String name, Map<String, String> attList) {
-        this(null, name, attList, null);
-    }
-
-    /**
-     * Lấy ra danh sách các thuộc tính
-     * @return 
-     */
-    public Map<String, String> getAttList() {
-        return attList;
-    }
 }
