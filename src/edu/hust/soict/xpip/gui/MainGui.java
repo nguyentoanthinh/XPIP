@@ -10,14 +10,14 @@ import edu.hust.soict.xpip.constants.FileConstants;
 import edu.hust.soict.xpip.utils.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+
+
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.tree.DefaultMutableTreeNode;
+
 
 /**
  *
@@ -26,7 +26,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class MainGui extends javax.swing.JFrame {
 
     /**
-     * Tá»‡p tin cáº§n phÃ¢n tÃ­ch
+     * Tệp tin cần phân tich
      */
     private File inputFile;
 
@@ -53,7 +53,7 @@ public class MainGui extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        this.setTitle("Phân tích file XML");
         jLabel1 = new javax.swing.JLabel();
         textFiledInputFile = new javax.swing.JTextField();
         buttonSelectFile = new javax.swing.JButton();
@@ -90,7 +90,7 @@ public class MainGui extends javax.swing.JFrame {
             }
         });
 
-        jScrollPane2.setViewportView(jTextPane1);
+     
 
         jLabel2.setText("Số luồng:");
 
@@ -107,7 +107,7 @@ public class MainGui extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                  .addComponent(jScrollPane2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -138,7 +138,7 @@ public class MainGui extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel2)
@@ -202,8 +202,9 @@ public class MainGui extends javax.swing.JFrame {
             jScrollPane1.setViewportView(jTree1);
             JOptionPane.showMessageDialog(this, "Success", "Thông báo ",
                     JOptionPane.OK_OPTION);
-
-            
+            jTextPane1= ct.getTextpane();
+            jScrollPane2.setViewportView(jTextPane1);
+           
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi",
                     JOptionPane.ERROR_MESSAGE);

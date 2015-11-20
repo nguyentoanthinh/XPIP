@@ -10,14 +10,15 @@ public class LinkingNode implements Callable<Chunk>{
 	private Chunk[] chunks;
 	private int chunkid;
 
-	
+	/** Liên kết các nút 
+	 * */
 	public LinkingNode(Chunk[] chunks, int chunkid) {
 		super();
 		this.chunks = chunks;
 		this.chunkid = chunkid;
 	}
 
-
+    
 	@Override
 	public Chunk call() throws Exception {
 		Chunk chunk = chunks[chunkid];
@@ -28,15 +29,15 @@ public class LinkingNode implements Callable<Chunk>{
 			for(Node node: ln){
 				int d = node.getDepth();
 				
+				
 				if(node.getParent()==null){
 					int index= chunkid;
 					Node temp = null;
-					while(temp==null && index>=0){
+					while(temp==null ){
 						index--;
 						temp=chunks[index].getRightmost()[d-1];
 						
 					}
-					if(temp!=null)
 						node.setParent(temp);
 				}
 			}

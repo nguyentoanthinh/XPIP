@@ -5,7 +5,6 @@
  */
 package edu.hust.soict.xpip.entities;
 
-import java.util.List;
 import java.util.Map;
 
 /**

@@ -37,7 +37,8 @@ public class Chunk {
      * </b>
      * ...
      */
-    private int depth;
+    
+    private int depth;// Độ sâu cảu chunk
     private BuildElementException exception;
     private Node[] rightmost;
    

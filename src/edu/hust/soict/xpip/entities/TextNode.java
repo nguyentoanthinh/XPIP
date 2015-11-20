@@ -43,8 +43,14 @@ public class TextNode implements Node{
 	@Override
 	public String name() {
 		// TODO Auto-generated method stub
+		return "Text";
+	}
+	
+	public String getContent() {
+		// TODO Auto-generated method stub
 		return content;
 	}
+	
 
 	@Override
 	public void setDepth(int depth) {

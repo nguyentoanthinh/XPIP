@@ -18,6 +18,7 @@ public class FileUtils {
      *
      * @param f
      * @return null nếu file là thư mục hoặc không có phần mở rộng
+
      */
     public static String getExtension(File f) {
         String result = null;
