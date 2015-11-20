@@ -13,19 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Load dữ liệu, phân mảnh.
+ * load dữ liệu và phan mảnh
  *
  * @author thinhntb
  */
 public class FileChunker {
 
     /**
-     * File đầu vào
+     *File đầu vào
      */
     private File inputFile;
 
     /**
-     * Số mảnh (mặc định là 10 mảnh)
+     * Số mảnh default = 10
      */
     public final static int NUM_CHUNK = 10;
 
@@ -40,10 +40,11 @@ public class FileChunker {
     }
 
     /**
-     * Thực hiện phân mảnh dữ liệu thành NUM_CHUNK phần
+     ** Thực hiện phân mảnh dữ liệu thành NUM_CHUNK phần
      *
      * @return null nếu data = null
      * @throws java.io.IOException
+
      */
     public List<Integer> chunk() throws IOException {
         data = load();
@@ -72,11 +73,12 @@ public class FileChunker {
     }
 
     /**
-     * Load nội dung file ra một mảng ký tự
+     ** Load nội dung file ra một mảng ký tự
      *
      * @return
      * @throws IOException
      */
+
     private char[] load() throws IOException {
         if (inputFile == null) {
             throw new NullPointerException("Null pointer at inuptFile!");

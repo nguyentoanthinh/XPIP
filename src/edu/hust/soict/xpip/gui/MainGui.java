@@ -8,12 +8,16 @@ package edu.hust.soict.xpip.gui;
 import edu.hust.soict.xpip.components.AppLogic;
 import edu.hust.soict.xpip.constants.FileConstants;
 import edu.hust.soict.xpip.utils.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -22,7 +26,7 @@ import javax.swing.filechooser.FileFilter;
 public class MainGui extends javax.swing.JFrame {
 
     /**
-     * Tệp tin cần phân tích
+     * Tá»‡p tin cáº§n phÃ¢n tÃ­ch
      */
     private File inputFile;
 
@@ -30,6 +34,8 @@ public class MainGui extends javax.swing.JFrame {
     
     private long startTime;
     private long endTime;
+    
+ //   private Node root;
 
     /**
      * Creates new form MainGui
@@ -51,8 +57,10 @@ public class MainGui extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         textFiledInputFile = new javax.swing.JTextField();
         buttonSelectFile = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
+        jScrollPane1 = new javax.swing.JScrollPane();  
+        
+       
+        
         buttonParse = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
@@ -74,9 +82,8 @@ public class MainGui extends javax.swing.JFrame {
             }
         });
 
-        jScrollPane1.setViewportView(jTree1);
-
-        buttonParse.setText("Phân tích");
+        
+        buttonParse.setText("Phân Tích");
         buttonParse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonParseActionPerformed(evt);
@@ -89,9 +96,9 @@ public class MainGui extends javax.swing.JFrame {
 
         comboNumOfThreads.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "4", "8" }));
 
-        jLabel3.setText("Thời gian thực hiện:");
+        jLabel3.setText("Thời Gian Thực Hiện:");
 
-        labelExeTime.setText("jLabel4");
+        labelExeTime.setText("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -180,23 +187,36 @@ public class MainGui extends javax.swing.JFrame {
                     + "cần phân tích!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
+        
         int numOfThread = Integer.parseInt(comboNumOfThreads.getSelectedItem().toString());
         appLogic.setInputFile(inputFile).resetPool(numOfThread);
 
         try {
             long time = appLogic.parse();
-            labelExeTime.setText(String.valueOf(time));
-        } catch (IOException | InterruptedException | ExecutionException ex) {
+            labelExeTime.setText(String.valueOf(time)+"ms");
+           
+            CreateTree ct = new CreateTree(appLogic.getRoot());
+          
+            jTree1 = new JTree();
+            jTree1 = ct.create();
+            jScrollPane1.setViewportView(jTree1);
+            JOptionPane.showMessageDialog(this, "Success", "Thông báo ",
+                    JOptionPane.OK_OPTION);
+
+            
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
-    }//GEN-LAST:event_buttonParseActionPerformed
+        
+         }//GEN-LAST:event_buttonParseActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+    	
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -224,6 +244,7 @@ public class MainGui extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainGui().setVisible(true);
+               
             }
         });
     }

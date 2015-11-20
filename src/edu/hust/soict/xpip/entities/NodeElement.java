@@ -21,7 +21,7 @@ public abstract class NodeElement extends Element implements Node{
     protected Node parent;
     
     /**
-     * Danh sách các con. Nếu là nút là thì thuộc tính này bằng null
+     * Danh sách con. Nếu là  node  lá  thì thuộc tính = null
      */
     protected List<Node> childsList;
     
@@ -32,9 +32,15 @@ public abstract class NodeElement extends Element implements Node{
 
     /**
      * Danh sách nameSpace mà thẻ mở này định nghĩa.
-     * Nếu thẻ không định nghĩa nameSpace nào thì thuộc tính này bằng null
+     * sNếu thẻ không định nghĩa nameSpace nào thì thuộc tính này bằng null
      */
     protected List<NameSpace> nameSpaces;
+    
+    /** 
+     * Độ sâu của nút so vói độ sâu của  chunk
+     * 
+     */
+    protected  int depth;
     
     public NodeElement(NameSpace ns, String name, Map<String, String> attList, List<NameSpace> nameSpaces) {
         super(ns, name);
@@ -54,7 +60,7 @@ public abstract class NodeElement extends Element implements Node{
     }
 
     /**
-     * Lấy ra danh sách các thuộc tính
+     * Láº¥y ra danh sÃ¡ch cÃ¡c thuá»™c tÃ­nh
      * @return 
      */
     public Map<String, String> getAttList() {
@@ -74,6 +80,30 @@ public abstract class NodeElement extends Element implements Node{
 
     @Override
     public void addChild(Node node) {
+    	
         childsList.add(node);
     }
+    
+    @Override
+    public List<Node> getChild() {
+        return childsList;
+    }
+    
+    @Override
+    public void setDepth(int depth){
+    	this.depth = depth;
+    }
+    @Override
+    public int getDepth(){
+		return depth;
+    }
+    
+    @Override
+    public String name() {
+		// TODO Auto-generated method stub
+    	
+		return super.getName();
+	}
+  
+
 }

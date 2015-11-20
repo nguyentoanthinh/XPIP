@@ -15,6 +15,7 @@ import edu.hust.soict.xpip.entities.StartElement;
 import edu.hust.soict.xpip.entities.TextNode;
 import edu.hust.soict.xpip.entities.XMLDeclarationElement;
 import edu.hust.soict.xpip.exception.BuildElementException;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,6 +47,7 @@ public class ChunkParser implements Callable<Chunk> {
     private XMLTextProcessor textProcessor;
 
     public ChunkParser(char[] data, int start, int end) {
+    	
         this.data = data;
         this.start = start;
         this.end = end;
@@ -77,12 +79,15 @@ public class ChunkParser implements Callable<Chunk> {
                             + "pháp xml tại: " + text));
                 } else if (openPos > 0) {         // Ký tự mở thẻ ở vị > 0 --> Có text trước thẻ
                     String content = text.substring(0, openPos);
-                    if (elementStack.isEmpty()) {    // Stack rỗng --> TextNode này có cha ở chunk khác
-                        trees.add(new TextNode(content));
-                    } else {
-                        TextNode textNode = new TextNode(content);
+                    TextNode textNode = new TextNode(content);
+                    if (!elementStack.isEmpty()) { 
                         textNode.setParent(elementStack.peek());
                     }
+                    int depth = elementStack.size()-unresolveEndElement.size();
+                    
+                    textNode.setDepth(depth);
+                    trees.add(textNode);
+                    
                 }
 
                 String eText = text.substring(openPos);
@@ -90,19 +95,21 @@ public class ChunkParser implements Callable<Chunk> {
                 Element e = buildElement(eText);
                 if (e instanceof StartElement) {
                     StartElement se = (StartElement) e;
-                    if (!elementStack.isEmpty()) {
-                        se.setParent(elementStack.peek());
-                    } else {
-                        trees.add((Node) e);
-                    }
+                    if (!elementStack.isEmpty()) {	
+                        se.setParent(elementStack.peek()); 
+                    } 
+                    int depth = elementStack.size()-unresolveEndElement.size();
+                    ((Node) e).setDepth(depth);
+                    trees.add((Node) e);
                     elementStack.push(se);
                 } else if (e instanceof EndElement) {
                     if (elementStack.isEmpty()) {       // Stack rỗng --> Đây là UnresolveEnd
+                    	
                         unresolveEndElement.add((EndElement) e);
                     } else {
                         StartElement se = elementStack.pop();   // Lấy ra startElement ở đầu Stack
                         EndElement ee = (EndElement) e;
-                        if (!isMatch(se, ee)) {       // Thẻ đóng khớp với thẻ mở ở đầu stack
+                        if (!isMatch(se, ee)) {       // TThẻ đóng khớp với thẻ mở ở đầu stack
                             return new Chunk(new BuildElementException("Không khớp với thẻ mở"
                                     + " tại thẻ đóng: " + text));
                         }
@@ -111,13 +118,14 @@ public class ChunkParser implements Callable<Chunk> {
                     SelfClosingElement sc = (SelfClosingElement) e;
                     if (!elementStack.isEmpty()) {
                         sc.setParent(elementStack.peek());
-                    } else {
-                        trees.add((Node) e);
                     }
+                     trees.add((Node) e);
+                   
                 } else if (e instanceof XMLDeclarationElement) {
                     trees.add((Node) e);
                 }
             }
+           
         }
 
         /**
@@ -126,6 +134,7 @@ public class ChunkParser implements Callable<Chunk> {
         elementStack.stream().forEach((se) -> {
             unresolveStartElement.offer(se);
         });
+        
         return new Chunk(trees, unresolveStartElement, unresolveEndElement);
     }
 
@@ -134,6 +143,7 @@ public class ChunkParser implements Callable<Chunk> {
      *
      * @param eText là một đoạn text
      * @return Phần tử XML tương ứng với eText
+
      */
     public Element buildElement(String eText) {
         if (eText == null) {
@@ -179,7 +189,7 @@ public class ChunkParser implements Callable<Chunk> {
             }
             String eName = textProcessor.getElementName(eText);
             result = new EndElement(eNameSpace, eName);
-        } else if (textProcessor.isXMLDeclaration(eText)) {      // Là header
+        } else if (textProcessor.isXMLDeclaration(eText)) {      // LÃ  header
             result = new XMLDeclarationElement(textProcessor.getAttributeList(eText));
         }
         return result;

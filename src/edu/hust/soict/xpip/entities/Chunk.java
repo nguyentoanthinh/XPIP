@@ -16,12 +16,12 @@ import java.util.Queue;
 public class Chunk {
 
     /**
-     * Danh sách các cây trong mảnh.
+     * Danh sách cây trong mảnh
      */
     private List<Node> nodeList;
 
     /**
-     * Những thẻ mở mà chưa có thẻ đóng tương ứng trong mảnh.
+     * Những thẻ mở mà chưa có thẻ đóng tương ứng trong mảnh
      */
     private Queue<StartElement> unresolvedStartElement;
 
@@ -31,13 +31,16 @@ public class Chunk {
     private Queue<EndElement> unresolvedEndElement;
 
     /**
-     * Ngoại lệ xảy ra (!= null) nếu cấu trúc các thẻ trong mảnh không đúng. VD:
+     * Ngoại lệ xảy ra (!= null) nếu cấu trúc các thẻ trong mảnh không đúng
      * <root>
      * <a>
      * </b>
      * ...
      */
+    private int depth;
     private BuildElementException exception;
+    private Node[] rightmost;
+   
 
     public Chunk(BuildElementException e) {
         exception = e;
@@ -48,9 +51,19 @@ public class Chunk {
         this.nodeList = nodeList;
         this.unresolvedStartElement = unresolvedStartElement;
         this.unresolvedEndElement = unresolvedEndElement;
+        this.depth = unresolvedStartElement.size()-unresolvedEndElement.size();
+        
     }
 
-    public List<Node> getNodeList() {
+    public Node[] getRightmost() {
+		return rightmost;
+	}
+
+	public void setRightmost(Node[] rightmost) {
+		this.rightmost = rightmost;
+	}
+
+	public List<Node> getNodeList() {
         return nodeList;
     }
 
@@ -65,5 +78,14 @@ public class Chunk {
     public BuildElementException getException() {
         return exception;
     }
+
+	public int getDepth() {
+		return this.depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth=depth;
+		
+	}
 
 }

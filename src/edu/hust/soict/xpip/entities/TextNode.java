@@ -5,6 +5,8 @@
  */
 package edu.hust.soict.xpip.entities;
 
+import java.util.List;
+
 /**
  *
  * @author thinhntb
@@ -12,11 +14,12 @@ package edu.hust.soict.xpip.entities;
 public class TextNode implements Node{
 
     /**
-     * Nút cha của node.
-     * Nếu parent = null --> Chưa tìm được nút cha của text node
+     * Node cha của node.
+     * Node parent = null --> Chưa tìm nút cha của text node
      */
     private Node parent;
     private String content;
+    private int depth;
     
     public TextNode(String content){
         this.content = content;
@@ -36,5 +39,29 @@ public class TextNode implements Node{
     @Override
     public void addChild(Node node) {
     }
+
+	@Override
+	public String name() {
+		// TODO Auto-generated method stub
+		return content;
+	}
+
+	@Override
+	public void setDepth(int depth) {
+		this.depth=depth;
+		
+	}
+
+	@Override
+	public int getDepth() {
+		// TODO Auto-generated method stub
+		return depth;
+	}
+
+	@Override
+	public List<Node> getChild() {
+	     return null;
+	}
+    
     
 }
