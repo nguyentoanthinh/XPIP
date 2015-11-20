@@ -82,20 +82,20 @@ public class AppLogic {
            
         }
         
-//        for (int i = 0; i < pos.size() - 1; i++){
-//            CalculateDepth_RightMostNode Cal = new CalculateDepth_RightMostNode(chunks[i]);
-//            ft[i] = service.submit(Cal);
-//            chunks[i] = (Chunk) ft[i].get(); 
-//            
-//         }
-//        
-//        
-//         
-//        for (int i = 0; i < pos.size() - 1; i++){
-//        	LinkingNode lk = new LinkingNode(chunks, i);
-//        	ft[i] = service.submit(lk);
-//            chunks[i] = (Chunk) ft[i].get(); 
-//        }
+        for (int i = 0; i < pos.size() - 1; i++){
+            CalculateDepth_RightMostNode Cal = new CalculateDepth_RightMostNode(chunks[i]);
+            ft[i] = service.submit(Cal);
+            chunks[i] = (Chunk) ft[i].get(); 
+            
+         }
+        
+        
+         
+        for (int i = 0; i < pos.size() - 1; i++){
+        	LinkingNode lk = new LinkingNode(chunks, i);
+        	ft[i] = service.submit(lk);
+            chunks[i] = (Chunk) ft[i].get(); 
+        }
         
       
         Node t=chunks[0].getNodeList().get(0);
