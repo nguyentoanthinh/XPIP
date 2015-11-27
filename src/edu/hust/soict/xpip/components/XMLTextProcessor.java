@@ -66,7 +66,7 @@ public class XMLTextProcessor {
     /**
      * 
      * @param text
-     * @return true nếu text là thẻ mở
+     * @return true nếu Text là thẻ mở
      */
     public boolean isStartElement(String text){
         if (text == null){
@@ -120,9 +120,9 @@ public class XMLTextProcessor {
     
     /**
      * Lấy ra các thuộc tính định nghĩa name space trong thẻ.
-     * Map<K,V>: K là prefix, V là url
+     * Map<K,V>: K là  prefix, V là  url
      * @param eText
-     * @return null nếu thẻ không định nghĩa namespace nào.
+     * @return null nếu thẻ không định nghĩa namespace nào
      */
     public Map<String, String> getNameSpaceDefine(String eText){
         if (eText == null){
@@ -142,7 +142,7 @@ public class XMLTextProcessor {
      * Lấy ra các thuộc tính
      *
      * @param text
-     * @return null nếu không tìm thấy thuộc tính nào.
+     * @return null nếu không tìm thấy thuộc tính nào
      */
     public Map<String, String> getAttributeList(String text) {
         if (text == null) {

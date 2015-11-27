@@ -25,7 +25,7 @@ public class AppLogic {
      * Tệp tin XML cần phân tích
      */
     private File inputFile;
-    
+    private String except;
     /**
      * Các mảnh sau khi được phân tích
      */
@@ -41,13 +41,19 @@ public class AppLogic {
     
     private ExecutorService service;
     
-    public AppLogic(){}
+    public AppLogic(){
+    	
+    }
     
     public AppLogic setInputFile(File inputFile){
         this.inputFile = inputFile;
+        this.except=null;
         return this;
     }
     
+    public String getExcept(){
+    	return this.except;
+    }
     /**
      * Phân tích
      * @return Thời gian thự hiện song song
@@ -75,55 +81,72 @@ public class AppLogic {
             ft[i] = service.submit(cp);
         }
         
-        /*** Tính độ sâu của chunk(song song) 
-        * */
-        int d[] = new int[ft.length+1] ;
-        d[0]=0;
         for (int i = 0; i < ft.length; i++) {
-                chunks[i] = (Chunk) ft[i].get();
-                d[i+1] = chunks[i].getDepth();
-                
-        }
-
-        
-        d = prefixsum(d);
-        for (int i = 0; i < ft.length; i++) {
-           chunks[i].setDepth(d[i]);  
+            chunks[i] = (Chunk) ft[i].get();  
         }
         
-        /*** Tính  độ sâu của nút 
-         * và nút phải nhất trên từng độ sâu của cây trong mỗi chunk
-         * (Song song)
-         * */
-        
-        for (int i = 0; i < pos.size() - 1; i++){
-            CalculateDepth_RightMostNode Cal = new CalculateDepth_RightMostNode(chunks[i]);
-            ft[i] = service.submit(Cal);
-            chunks[i] = (Chunk) ft[i].get(); 
-            
-         }
-        
-        
-         
-        for (int i = 0; i < pos.size() - 1; i++){
-        	LinkingNode lk = new LinkingNode(chunks, i);
-        	ft[i] = service.submit(lk);
-            chunks[i] = (Chunk) ft[i].get(); 
+        boolean c = true;
+        for(int i = 0; i < pos.size() - 1; i++){
+        		if(chunks[i].getException()!=null){
+        			c=false;
+        			this.except = new String(chunks[i].getException().getMessage());
+        			break;
+        		}
+        			
+        	
         }
         
-  
+        if(c){
         
-        /**Gán nút gốc
-         * */
-        Node t=chunks[0].getNodeList().get(0);
-        if(t.name().equals("xml")) {
-        	if(chunks[0].getNodeList().size()==1)
-        		t=chunks[1].getNodeList().get(0);
-        	else
-        		t=chunks[0].getNodeList().get(1);
-        	}
-        
-        this.root=t;
+	        /*** Tính độ sâu của chunk(song song) 
+	        * */
+	        int d[] = new int[ft.length+1] ;
+	        d[0]=0;
+	        for (int i = 0; i < ft.length; i++) {  
+	                d[i+1] = chunks[i].getDepth();
+	                
+	        }
+	
+	        
+	        d = prefixsum(d);
+	        for (int i = 0; i < ft.length; i++) {
+	           chunks[i].setDepth(d[i]);  
+	        }
+	        
+	        /*** Tính  độ sâu của nút 
+	         * và nút phải nhất trên từng độ sâu của cây trong mỗi chunk
+	         * (Song song)
+	         * */
+	        
+	        for (int i = 0; i < pos.size() - 1; i++){
+	            CalculateDepth_RightMostNode Cal = new CalculateDepth_RightMostNode(chunks[i]);
+	            ft[i] = service.submit(Cal);
+	            chunks[i] = (Chunk) ft[i].get(); 
+	            
+	         }
+	        
+	        
+	         
+	        for (int i = 0; i < pos.size() - 1; i++){
+	        	LinkingNode lk = new LinkingNode(chunks, i);
+	        	ft[i] = service.submit(lk);
+	            chunks[i] = (Chunk) ft[i].get(); 
+	        }
+	        
+	  
+	        
+	        /**Gán nút gốc
+	         * */
+	        Node t=chunks[0].getNodeList().get(0);
+	        if(t.name().equals("xml")) {
+	        	if(chunks[0].getNodeList().size()==1)
+	        		t=chunks[1].getNodeList().get(0);
+	        	else
+	        		t=chunks[0].getNodeList().get(1);
+	        	}
+	        
+	        this.root=t;
+        }
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }

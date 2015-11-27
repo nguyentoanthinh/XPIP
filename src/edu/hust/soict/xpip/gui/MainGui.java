@@ -194,16 +194,20 @@ public class MainGui extends javax.swing.JFrame {
         try {
             long time = appLogic.parse();
             labelExeTime.setText(String.valueOf(time)+"ms");
-           
-            CreateTree ct = new CreateTree(appLogic.getRoot());
-          
-            jTree1 = new JTree();
-            jTree1 = ct.create();
-            jScrollPane1.setViewportView(jTree1);
-            JOptionPane.showMessageDialog(this, "Success", "Thông báo ",
-                    JOptionPane.OK_OPTION);
-            jTextPane1= ct.getTextpane();
-            jScrollPane2.setViewportView(jTextPane1);
+            if(appLogic.getExcept()==null){
+	            CreateTree ct = new CreateTree(appLogic.getRoot());
+	          
+	            jTree1 = new JTree();
+	            jTree1 = ct.create();
+	            jScrollPane1.setViewportView(jTree1);
+	            JOptionPane.showMessageDialog(this, "Success", "Thông báo ",
+	                    JOptionPane.OK_OPTION);
+	            jTextPane1= ct.getTextpane();
+	            jScrollPane2.setViewportView(jTextPane1);
+	            }
+            else 
+            	JOptionPane.showMessageDialog(this,appLogic.getExcept() , "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi",
